@@ -10,7 +10,7 @@ import SwiftUI
 struct UsesListView: View {
     
     #warning("remove the forPreview argument or set it to false before shipping")
-    @StateObject var vm = UsersListViewModel(forPreview: true)
+    @StateObject var vm = UsersListViewModel(forPreview: false)
     
     var body: some View {
         NavigationView {
@@ -29,6 +29,11 @@ struct UsesListView: View {
                     
                 }
             }
+            .overlay(content: {
+                if vm.isLoading {
+                    ProgressView()
+                }
+            })
             .navigationTitle("Users")
             .listStyle(.plain)
             .onAppear {
