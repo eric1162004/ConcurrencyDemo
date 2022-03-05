@@ -14,6 +14,8 @@ class PostsListViewModel: ObservableObject {
     var userId: Int?
     
     @Published var isLoading = false
+    @Published var showAlert = false
+    @Published var errorMessage: String?
     
     func fetchPosts() {
         if let userId = userId {
@@ -26,7 +28,7 @@ class PostsListViewModel: ObservableObject {
                 
                 defer {
                     DispatchQueue.main.async {
-                        isLoading.toggle()
+                        self.isLoading.toggle()
                     }
                 }
                 
@@ -36,7 +38,10 @@ class PostsListViewModel: ObservableObject {
                         self.posts = posts
                     }
                 case .failure(let error):
-                    print(error)
+                    DispatchQueue.main.async {
+                        self.showAlert = true
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }

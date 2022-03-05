@@ -11,6 +11,8 @@ class UsersListViewModel: ObservableObject {
     
     @Published var users: [User] = []
     @Published var isLoading = false
+    @Published var showAlert = false
+    @Published var errorMessage: String?
     
     func fetchUsers() {
         
@@ -37,7 +39,10 @@ class UsersListViewModel: ObservableObject {
                         self.users = users
                     }
                 case .failure(let error):
-                    print(error)
+                    DispatchQueue.main.async {
+                        self.showAlert = true
+                        self.errorMessage = error.localizedDescription
+                    }
                 }
             }
         }

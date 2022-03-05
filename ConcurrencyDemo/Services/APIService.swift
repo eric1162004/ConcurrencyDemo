@@ -32,7 +32,7 @@ struct APIService {
                   }
             
             guard error == nil else {
-                completion(.failure(.dataTaskError))
+                completion(.failure(.dataTaskError(error!.localizedDescription)))
                 return
                 
             }
@@ -51,17 +51,33 @@ struct APIService {
                 completion(.success(decodedData))
             } catch  {
                 print("Error")
-                completion(.failure(.decodingError))
+                completion(.failure(.decodingError(error.localizedDescription)))
             }
             
         }.resume()
     }
 }
 
-enum APIError: Error{
+enum APIError: Error, LocalizedError{
+    
     case invalidURL
     case invalidResponseStatus
-    case dataTaskError
+    case dataTaskError(String)
     case corruptData
-    case decodingError
+    case decodingError(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return NSLocalizedString("The endpont URL is invalid", comment: "")
+        case .invalidResponseStatus:
+            return NSLocalizedString("The APIO failed to issue a valid response", comment: "")
+        case .dataTaskError(let string):
+            return string
+        case .corruptData:
+            return NSLocalizedString("The data provided appears to be corrupted", comment: "")
+        case .decodingError(let string):
+            return string
+        }
+    }
 }
