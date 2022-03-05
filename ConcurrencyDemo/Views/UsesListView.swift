@@ -43,8 +43,8 @@ struct UsesListView: View {
             })
             .navigationTitle("Users")
             .listStyle(.plain)
-            .onAppear {
-                vm.fetchUsers()
+            .task {
+                await vm.fetchUsers()
             }
         }
     }

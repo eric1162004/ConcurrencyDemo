@@ -31,12 +31,19 @@ struct PostsListView: View {
                 ProgressView()
             }
         })
+        .alert("Application Error", isPresented: $vm.showAlert, actions: {
+            Button("OK"){}
+        }, message :{
+            if let errorMessage = vm.errorMessage {
+                Text(errorMessage)
+            }
+        })
         .navigationTitle("Posts")
         .navigationBarTitleDisplayMode(.inline)
         .listStyle(.plain)
-        .onAppear {
+        .task {
             vm.userId = userId
-            vm.fetchPosts()
+            await vm.fetchPosts()
         }
         
     }
